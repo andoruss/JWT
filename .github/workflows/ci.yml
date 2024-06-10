@@ -33,3 +33,4 @@ jobs:
         if: always()
         run: |
           echo "SonarCloud scan results: https://sonarcloud.io/dashboard?id=your_project_key"
+
