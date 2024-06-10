@@ -1,4 +1,8 @@
-Création d'une pipeline qui va permttre de tester mon code et utiliser sonarcloud.
+Création de la CI:
+
+    à la racine du projet créer un répertoire nomé : ".github/workflows"
+    dans ce répertoire ajouter le fichier : "ci.yml"
+
 
 Création d'un base pour qui va contenir les rôles, des utilisateur et d'autres tables pour tester si l'autorisation fonctionne correctement
 
