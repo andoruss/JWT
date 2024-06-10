@@ -21,6 +21,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         run: |
           npm install -g sonarqube-scanner
           sonar-scanner \
@@ -33,5 +34,5 @@ jobs:
       - name: Publish SonarCloud results
         if: always()
         run: |
-          echo "SonarCloud scan results: https://sonarcloud.io/dashboard?id=andoruss"
+          echo "SonarCloud scan results: https://sonarcloud.io/dashboard?id=andoruss_JWT"
 
