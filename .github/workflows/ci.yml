@@ -34,5 +34,5 @@ jobs:
       - name: Publish SonarCloud results
         if: always()
         run: |
-          echo "SonarCloud scan results: https://sonarcloud.io/dashboard?id=andoruss_JWT"
+          echo "SonarCloud scan results: https://sonarcloud.io/dashboard?id=${{ secrets.SONAR_PROJECT_KEY }}"
 
