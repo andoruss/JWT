@@ -1,0 +1,7 @@
+sonar.projectKey=andoruss_JWT
+sonar.organization=andoruss
+sonar.host.url=https://sonarcloud.io
+sonar.login=andoruss
+
+# Propriétés spécifiques au projet
+sonar.sources=.
