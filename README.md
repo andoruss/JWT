@@ -1,4 +1,4 @@
-Création de la CI:
+1 - Création de la CI:
 
 à la racine du projet créer un répertoire nomé : 
     
@@ -49,7 +49,46 @@ Pour "SONAR_TOKEN" est égal au token généré quand le projet est créé sur s
 
 Lorsque la ci est lancé on peut voir le résultat du scan sur le projet sonarCloud.
 
-Création d'un base pour qui va contenir les rôles, des utilisateur et d'autres tables pour tester si l'autorisation fonctionne correctement
+2- Création de la base de données et de la migration: 
+
+Installer dans la couche context et dans l'api les packages nugets ->
+    
+    Microsoft.EntityFrameworkCore
+    Microsoft.EntityFrameworkCore.Design
+    Microsoft.EntityFrameworkCore.SqlServer
+    Microsoft.EntityFrameworkCore.Tools
+
+Ajouter un fichier context dans la couche context ->
+
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+    {    
+        public DbSet<Garage> Garages { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Voiture> Voitures { get; set; }
+        public DbSet<User> Users { get; set; }
+    }
+
+Ajout de la connexion string pour se connecter à la base de données dans les fichier settings de l'api->
+Il faut au préalable créer une base de données vide.
+
+    "ConnectionStrings": {
+      "DefaultConnection": "Server=(localdb)\MSSQLLocalDB;Database=LearnJWT;Trusted_Connection=True;"
+    }
+
+Migration des entités dans la base de données -> 
+aller dans le gestionnair de package et sélectionner le projet par default qui contient le dbContext
+
+ajouter une migration :
+
+    add-migration InitialMigration
+    
+mettre la base à jour :
+
+    update-database --verbose
+
+    
+
+Remplissage de la base de fausses données:
 
 Hachage des mot de passe
 
