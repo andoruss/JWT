@@ -39,13 +39,13 @@ jobs:
         run: |
           npm install -g sonarqube-scanner
           sonar-scanner \
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-            -Dsonar.organization=your_organization_key \
+            -Dsonar.projectKey=andoruss_JWT \
+            -Dsonar.organization=andoruss \
             -Dsonar.sources=. \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.login=andoruss
 
       - name: Publish SonarCloud results
         if: always()
         run: |
-          echo "SonarCloud scan results: https://sonarcloud.io/dashboard?id=${{ secrets.SONAR_PROJECT_KEY }}"
+          echo "SonarCloud scan results: https://sonarcloud.io/dashboard?id=andoruss_JWT"
