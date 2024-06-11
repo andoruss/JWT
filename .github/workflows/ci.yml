@@ -17,35 +17,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Display environment variables
-        run: |
-          echo "GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
-          echo "SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}"
-          echo "SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}"
-
       - name: SonarCloud Scan
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         run: |
           npm install -g sonarqube-scanner
           sonar-scanner \
-            -Dsonar.projectKey=andoruss_JWT \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.organization=andoruss \
             -Dsonar.sources=. \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=andoruss
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      - name: Publish SonarCloud results
-        if: always()
-        run: |
-          echo "SonarCloud scan results: https://sonarcloud.io/dashboard?id=andoruss_JWT"
