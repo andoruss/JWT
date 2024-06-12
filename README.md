@@ -86,13 +86,189 @@ mettre la base à jour :
 
     update-database --verbose
 
-    
+3 - Remplissage de la base de fausses données:
+Ajouter le nuget package dans la couche Entities -> 
 
-Remplissage de la base de fausses données:
+    Bogus
+
+exemple de génération de données ->
+
+    using Bogus;
+using Microsoft.AspNetCore.Identity;
+
+namespace Etities.Fixtures;
+
+public class Fixture
+{
+    private readonly IPasswordHasher<User> _passwordHasher;
+
+    public Fixture(IPasswordHasher<User> passwordHasher)
+    {
+        _passwordHasher = passwordHasher;
+        GenerateFixtures();
+        HashPasswords();
+    }
+
+    public static List<Role> Roles { get; set; } =
+    [
+        new() { Id = Guid.NewGuid(), Libelle = "Admin" },
+        new() { Id = Guid.NewGuid(), Libelle = "Garagiste" },
+        new() { Id = Guid.NewGuid(), Libelle = "Acheteur" }
+    ];
+
+    public static List<User> Users { get; set; } = [];
+        
+    public static List<Garage> Garages { get; set; } = [];
+
+    public static List<Voiture> Voitures { get; set; } = [];
+
+    public void GenerateFixtures()
+    {
+        var userGenerator = new Faker<User>()
+            .RuleFor(u => u.Id, f => Guid.NewGuid())
+            .RuleFor(u => u.Name, f => f.Name.FullName())
+            .RuleFor(u => u.Email, f => f.Internet.Email())
+            .RuleFor(u => u.Password, f => f.Internet.Password())
+            .RuleFor(u => u.Role, f => f.PickRandom(Roles))
+            .RuleFor(u => u.CreatedAt, DateTime.Now);
+        Users = userGenerator.Generate(29);
+
+        Users.Add(new User
+        {
+            Id = Guid.NewGuid(),
+            Name = "antoine",
+            Email = "antoine",
+            Password = "antoine",
+            Role = Roles[0]
+        });
+
+        Users.Add(new User
+        {
+            Id = Guid.NewGuid(),
+            Name = "aurelien",
+            Email = "aurelien",
+            Password = "aurelien",
+            Role = Roles[1]
+        });
+
+        Users.Add(new User
+        {
+            Id = Guid.NewGuid(),
+            Name = "beney",
+            Email = "beney",
+            Password = "beney",
+            Role = Roles[2]
+        });
+
+        var voitureGenerate = new Faker<Voiture>()
+            .RuleFor(v => v.Id, f => Guid.NewGuid())
+            .RuleFor(v => v.Marque, f => f.Vehicle.Manufacturer())
+            .RuleFor(v => v.Libelle, f => f.Vehicle.Model())
+            .RuleFor(v => v.Immatriculation, f => f.Vehicle.Vin())
+            .RuleFor(v => v.Prix, f => f.Random.Float(1000, 100000));
+        Voitures = voitureGenerate.Generate(2000);
+
+        var garageGenerate = new Faker<Garage>()
+            .RuleFor(g => g.Id, f => Guid.NewGuid())
+            .RuleFor(g => g.Name, f => f.Company.CompanyName())
+            .RuleFor(g => g.Address, f => f.Address.FullAddress())
+            .RuleFor(g => g.Voitures, f => f.PickRandom(Voitures, 10).ToList());
+        Garages = garageGenerate.Generate(100);
+
+        }
+
+        public void HashPasswords()
+        {
+            foreach (var user in Users)
+            {
+                user.Password = _passwordHasher.HashPassword(user, user.Password);
+            }
+        }
+    }
+
+Insertion des données dans la base ->
+créer un seeder dans la couche dal pour insérer les données 
+
+    using Context;
+    using DAL.Contract.Seeder;
+    using Etities;
+    using Etities.Fixtures;
+    using Microsoft.AspNetCore.Identity;
+    
+    namespace DAL.Seeder;
+    
+    public class Seeder(AppDbContext context) : ISeederContract
+    {
+        private readonly AppDbContext _context = context;
+    
+        /// <summary>
+        /// Supprimer toutes les données des tables
+        /// </summary>
+        private async Task ClearDatabase()
+        {
+            _context.Roles.RemoveRange(_context.Roles);
+            _context.Users.RemoveRange(_context.Users);
+            _context.Garages.RemoveRange(_context.Garages);
+            _context.Voitures.RemoveRange(_context.Voitures);
+    
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// ajout tous les objets dans la base de données
+        /// </summary>
+        public async Task Initialize()
+        {
+        await ClearDatabase();
+    
+        var fixture = new Fixture(new PasswordHasher<User>());
+
+        if (!_context.Roles.Any())
+        {
+            _context.Roles.AddRange(Fixture.Roles);
+        }
+
+        if (!_context.Users.Any())
+        {
+            _context.Users.AddRange(Fixture.Users);
+        }
+
+        if (!_context.Garages.Any())
+        {
+            _context.Garages.AddRange(Fixture.Garages);
+        }
+
+        if (!_context.Voitures.Any())
+        {
+            _context.Voitures.AddRange(Fixture.Voitures);
+        }
+    
+            await _context.SaveChangesAsync();
+        }
+    }
+
+Appelle de l'initialisation dans le program.cs ->
+
+    // Exécuter le seeder lors du démarrage de l'application
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {   
+            // Récupérer le seeder et l'initialiser
+            var seeder = services.GetRequiredService<ISeederContract>();
+            await seeder.Initialize();
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while seeding the database.");
+        }
+    }
+
+Ajout des authorisations sur les routes
 
 Hachage des mot de passe
 
 Création d'un JWT 
-
-Ajout des authorisations sur les routes
 
