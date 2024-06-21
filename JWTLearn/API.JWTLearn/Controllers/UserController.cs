@@ -3,12 +3,12 @@
 namespace API.JWTLearn.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UserController : ControllerBase
 {
     [HttpGet]
-    public bool Test()
+    public async Task<ActionResult<String>> Test()
     {
-        return true;
+        return Ok("oui");
     }
 }

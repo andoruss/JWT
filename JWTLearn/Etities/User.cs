@@ -7,7 +7,5 @@ public class User : EntityBase
     public string Password { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid RoleId { get; set; }
-    public Role Role { get; set; }
-    public List<Garage> Garages { get; set; } = [];
-    public List<Voiture> Voitures { get; set; } = [];
+    public Role Role { get; set; } = null!;
 }

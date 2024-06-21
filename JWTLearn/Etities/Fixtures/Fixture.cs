@@ -21,15 +21,10 @@ public class Fixture
     public static List<Role> Roles { get; set; } =
     [
         new() { Id = Guid.NewGuid(), Libelle = "Admin" },
-        new() { Id = Guid.NewGuid(), Libelle = "Garagiste" },
-        new() { Id = Guid.NewGuid(), Libelle = "Acheteur" }
+        new() { Id = Guid.NewGuid(), Libelle = "User" }
     ];
 
     public static List<User> Users { get; set; } = [];
-        
-    public static List<Garage> Garages { get; set; } = [];
-
-    public static List<Voiture> Voitures { get; set; } = [];
 
     /// <summary>
     /// génère les données de test
@@ -62,31 +57,6 @@ public class Fixture
             Password = "aurelien",
             Role = Roles[1]
         });
-
-        Users.Add(new User
-        {
-            Id = Guid.NewGuid(),
-            Name = "beney",
-            Email = "beney",
-            Password = "beney",
-            Role = Roles[2]
-        });
-
-        var voitureGenerate = new Faker<Voiture>()
-            .RuleFor(v => v.Id, f => Guid.NewGuid())
-            .RuleFor(v => v.Marque, f => f.Vehicle.Manufacturer())
-            .RuleFor(v => v.Libelle, f => f.Vehicle.Model())
-            .RuleFor(v => v.Immatriculation, f => f.Vehicle.Vin())
-            .RuleFor(v => v.Prix, f => f.Random.Float(1000, 100000));
-        Voitures = voitureGenerate.Generate(2000);
-
-        var garageGenerate = new Faker<Garage>()
-            .RuleFor(g => g.Id, f => Guid.NewGuid())
-            .RuleFor(g => g.Name, f => f.Company.CompanyName())
-            .RuleFor(g => g.Address, f => f.Address.FullAddress())
-            .RuleFor(g => g.Voitures, f => f.PickRandom(Voitures, 10).ToList());
-        Garages = garageGenerate.Generate(100);
-
     }
 
     /// <summary>

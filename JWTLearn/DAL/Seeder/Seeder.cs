@@ -17,8 +17,6 @@ public class Seeder(AppDbContext context) : ISeederContract
     {
         _context.Roles.RemoveRange(_context.Roles);
         _context.Users.RemoveRange(_context.Users);
-        _context.Garages.RemoveRange(_context.Garages);
-        _context.Voitures.RemoveRange(_context.Voitures);
 
         await _context.SaveChangesAsync();
     }
@@ -40,16 +38,6 @@ public class Seeder(AppDbContext context) : ISeederContract
         if (!_context.Users.Any())
         {
             _context.Users.AddRange(Fixture.Users);
-        }
-
-        if (!_context.Garages.Any())
-        {
-            _context.Garages.AddRange(Fixture.Garages);
-        }
-
-        if (!_context.Voitures.Any())
-        {
-            _context.Voitures.AddRange(Fixture.Voitures);
         }
 
         await _context.SaveChangesAsync();
