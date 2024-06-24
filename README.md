@@ -94,12 +94,12 @@ Ajouter le nuget package dans la couche Entities ->
 exemple de génération de données ->
 
     using Bogus;
-using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity;
 
-namespace Etities.Fixtures;
+    namespace Etities.Fixtures;
 
-public class Fixture
-{
+    public class Fixture
+    {
     private readonly IPasswordHasher<User> _passwordHasher;
 
     public Fixture(IPasswordHasher<User> passwordHasher)
