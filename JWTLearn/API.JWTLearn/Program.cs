@@ -1,16 +1,30 @@
 using Context;
+using DAL;
+using DAL.Contract;
 using DAL.Contract.Seeder;
 using DAL.Seeder;
 using Etities;
+using Etities.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Service;
+using Service.Contract;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//
+// Set up configuration sources.
+//
+
+builder.Services.Configure<AuthenticationSettings>(builder.Configuration.GetSection("Authentication:Local"));
+
 // Add services to the container.
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<ISeederContract, Seeder>();
+builder.Services.AddScoped<IUserDAL, UserDAL>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 
 builder.Services.AddControllers();
