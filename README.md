@@ -297,6 +297,7 @@ Maintenant nous devons configurer la liaison de cette class au fichier de config
     builder.Services.Configure<AuthenticationSettings>(builder.Configuration.GetSection("Authentication:Local"));
 
 Il faut créer le service qui va permettre l'authentification et la génération du JWT.
+    
     public class AuthenticationService(IOptions<AuthenticationSettings> authenticationSettings,
         IUserDAL dal,
         IPasswordHasher<User> passwordHasher) : IAuthenticationService
